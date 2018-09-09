@@ -1,7 +1,6 @@
 package com.knhu.shtefan.analysis.spam.analysis.utils;
 
 
-import com.knhu.shtefan.analysis.spam.analysis.dto.Point;
 import com.knhu.shtefan.analysis.spam.analysis.dto.SortedMessages;
 import lombok.extern.log4j.Log4j2;
 
@@ -17,25 +16,29 @@ import java.util.TreeMap;
 import java.util.HashMap;
 
 @Log4j2
-public class TextAnalyser {
+public class FileAnalyser {
 
-  public static Map getTopPoints() {
-    return analyseFile();
-  }
+  private static final String FILE_NAME = "english.txt";
 
-  private static Map<String, Object> analyseFile() {
+  public static Map<String, Object> getTopPoints() {
     SortedMessages sortedMessages = sortMessages();
     if (Objects.isNull(sortedMessages)) {
-      throw new NullPointerException("Sorted messages are null.");
+      log.error("SortedMessages is null.");
+      throw new NullPointerException("SortedMessages is null.");
     }
 
+    Map<String, Integer> spamWordsFrequency = analyseMessages(sortedMessages.getSpam());
+    List topSpam = ConverterToPoint.convertToTop10Points(spamWordsFrequency);
+
+    Map<String, Integer> hamWordsFrequency = analyseMessages(sortedMessages.getHam());
+    List topHam = ConverterToPoint.convertToTop10Points(hamWordsFrequency);
+
     Map<String, Object> response = new HashMap<>();
-    response.put("spam", analyseMessages(sortedMessages.getSpam()));
-    response.put("ham", analyseMessages(sortedMessages.getHam()));
+     response.put("spam", topSpam);
+     response.put("ham", topHam);
 
     return response;
   }
-
 
   /**
    * Read all messages from file and sorted them in list of spam or list of ham messages.
@@ -45,7 +48,7 @@ public class TextAnalyser {
    */
   private static SortedMessages sortMessages() {
     SortedMessages sortedMessages = new SortedMessages();
-    try (BufferedReader br = new BufferedReader(new FileReader("english.txt"))) {
+    try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
       String line;
       while ((line = br.readLine()) != null) {
         if (line.endsWith("spam")) {
@@ -62,7 +65,14 @@ public class TextAnalyser {
     return sortedMessages;
   }
 
-  private static List<Point> analyseMessages(List<String> messages) {
+  /**
+   * Count each word frequency in all messages, return map of
+   * word - frequency.
+   *
+   * @param messages list of messages
+   * @return map of word frequency
+   */
+  private static Map<String, Integer> analyseMessages(List<String> messages) {
     Map<String, Integer> wordsFrequency = new TreeMap<>();
     for (String message : messages) {
       message = message.replace("...", "");
@@ -82,7 +92,7 @@ public class TextAnalyser {
       });
     }
 
-    return ConverterToPoint.convertToTop10Points(wordsFrequency);
+    return wordsFrequency;
   }
 
 }

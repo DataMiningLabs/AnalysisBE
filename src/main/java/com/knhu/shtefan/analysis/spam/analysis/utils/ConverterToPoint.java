@@ -12,13 +12,15 @@ import java.util.LinkedHashMap;
 
 public class ConverterToPoint {
 
+  private static final int TOP_COUNT = 10;
+
   public static List<Point> convertToTop10Points(Map<String, Integer> wordsFrequency) {
     List<Point> points = new ArrayList<>();
 
     wordsFrequency = sortMapByValue(wordsFrequency);
 
     List<Map.Entry<String, Integer>> list = new LinkedList<>(wordsFrequency.entrySet());
-    for (int i = 0; i < 10; i += 1) {
+    for (int i = 0; i < TOP_COUNT; i += 1) {
       String x = list.get(i).getKey();
       Integer y = list.get(i).getValue();
 
@@ -30,6 +32,15 @@ public class ConverterToPoint {
     return points;
   }
 
+  /**
+   * Get map of word - frequency, sort map by <b>VALUE</b>, returns
+   * sorted map.
+   *
+   * @param map map of words and their frequencies in messages
+   * @param <K> word
+   * @param <V> frequency
+   * @return sorted by value map
+   */
   private static <K, V extends Comparable<? super V>> Map<K, V> sortMapByValue(Map<K, V> map) {
     List<Map.Entry<K, V>> list = new LinkedList<>(map.entrySet());
     Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
