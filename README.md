@@ -28,7 +28,9 @@ As reported at [3] in the about section, the big corpus average number of words 
 The files contain one message per line in raw text. Each line is finished with a coma-separated tag, which can be "ham" or "spam". Here are some examples:
 
 Urgent! call 09061749602 from Landline. Your complimentary 4* Tenerife Holiday or Ј10,000 cash await collection SAE T&Cs BOX 528 HP20 1YF 150ppm 18+,spam
+
 Ok then i come n pick u at engin?,ham
+
 Anything lor... U decide...,ham
 
 Messages are not chronologically sorted.
