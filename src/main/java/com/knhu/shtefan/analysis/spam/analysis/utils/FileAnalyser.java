@@ -2,7 +2,9 @@ package com.knhu.shtefan.analysis.spam.analysis.utils;
 
 
 import com.knhu.shtefan.analysis.spam.analysis.dto.SortedMessages;
+import com.knhu.shtefan.analysis.spam.analysis.dto.SortedMessagesCount;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -16,11 +18,12 @@ import java.util.TreeMap;
 import java.util.HashMap;
 
 @Log4j2
+@Service
 public class FileAnalyser {
 
   private static final String FILE_NAME = "english.txt";
 
-  public static Map<String, Object> getTopPoints() {
+  public Map<String, Object> getTopPoints() {
     SortedMessages sortedMessages = sortMessages();
     if (Objects.isNull(sortedMessages)) {
       log.error("SortedMessages is null.");
@@ -40,13 +43,28 @@ public class FileAnalyser {
     return response;
   }
 
+  public SortedMessagesCount getSortedMessagesCount() {
+    SortedMessages sortedMessages = sortMessages();
+    if (Objects.isNull(sortedMessages)) {
+      log.error("SortedMessages is null.");
+      throw new NullPointerException("SortedMessages is null.");
+    }
+
+    int spamCount = sortedMessages.getSpam().size();
+    int hamCount = sortedMessages.getHam().size();
+
+    SortedMessagesCount sortedMessagesCount = new SortedMessagesCount(spamCount, hamCount);
+
+    return sortedMessagesCount;
+  }
+
   /**
    * Read all messages from file and sorted them in list of spam or list of ham messages.
    * Returns null if some exception happens.
    *
    * @return object of SortedMessages where spam and ham messages are in different lists
    */
-  private static SortedMessages sortMessages() {
+  private SortedMessages sortMessages() {
     SortedMessages sortedMessages = new SortedMessages();
     try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
       String line;
@@ -72,7 +90,7 @@ public class FileAnalyser {
    * @param messages list of messages
    * @return map of word frequency
    */
-  private static Map<String, Integer> analyseMessages(List<String> messages) {
+  private Map<String, Integer> analyseMessages(List<String> messages) {
     Map<String, Integer> wordsFrequency = new TreeMap<>();
     for (String message : messages) {
       message = message.replace("...", "");
