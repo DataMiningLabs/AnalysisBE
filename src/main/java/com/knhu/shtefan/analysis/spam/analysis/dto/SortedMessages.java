@@ -12,11 +12,14 @@ public class SortedMessages {
   private int hamSize;
 
   public void addSpam(String spam) {
+    spam = spam.replaceAll("[,|./;:\"']", "");
+    System.out.println(spam);
     spamList.append(spam);
     spamSize += 1;
   }
 
   public void addHam(String ham) {
+    ham = ham.replaceAll("[,|./;:\"']", "");
     hamList.append(ham);
     hamSize += 1;
   }
