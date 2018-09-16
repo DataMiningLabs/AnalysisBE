@@ -13,7 +13,6 @@ public class SortedMessages {
 
   public void addSpam(String spam) {
     spam = spam.replaceAll("[,|./;:\"']", "");
-    System.out.println(spam);
     spamList.append(spam);
     spamSize += 1;
   }

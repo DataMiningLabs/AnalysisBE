@@ -10,15 +10,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-
-import java.util.Objects;
-import java.util.Collections;
-import java.util.Arrays;
-
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Log4j2
 @Component
@@ -72,22 +64,35 @@ public class FileAnalyser {
 
   private List<Point> analyseMessages(StringBuilder messages) {
     List<String> words = Arrays.asList(messages.toString().split(" "));
-    return words
-      .stream().collect(
-        Collectors.toMap(
-          word -> word,
-          word -> Collections.frequency(words, word),
-          (word1, word2) -> word1
-        )
-      )
-      .entrySet().stream()
-      .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
-      .limit(10)
-      .map(item -> new Point(item.getKey(), item.getValue()))
-      .collect(Collectors.toList());
+
+    Map<String, Integer> uniquesWords = new HashMap<>();
+    words.forEach(word -> {
+      if (uniquesWords.containsKey(word)) {
+        int frequency = uniquesWords.get(word) + 1;
+        frequency += 1;
+        uniquesWords.replace(word, frequency);
+      }
+
+      if (!uniquesWords.containsKey(word)) {
+        uniquesWords.put(word, 1);
+      }
+    });
+
+    List<Map.Entry<String, Integer>> list = new ArrayList<>(uniquesWords.entrySet());
+    list.sort(Map.Entry.comparingByValue());
+    Collections.reverse(list);
+
+    List<Point> points = new ArrayList<>(10);
+    for (Map.Entry<String, Integer> item : list.subList(0, TOP_NUMBER)) {
+      points.add(new Point(item.getKey(), item.getValue()));
+    }
+
+    return points;
   }
 
   private static final String FILE_NAME = "english.txt";
   private static final String FILE_NAME_BIG = "english_big.txt";
+
+  private static final int TOP_NUMBER = 10;
 
 }
