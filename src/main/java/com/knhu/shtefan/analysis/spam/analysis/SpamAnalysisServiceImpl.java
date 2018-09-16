@@ -14,13 +14,13 @@ public class SpamAnalysisServiceImpl implements SpamAnalysisService {
   private FileAnalyser fileAnalyser;
 
   @Override
-  public Map getPoints() {
-    return fileAnalyser.getTopPoints();
+  public Map getPointsByFileName(String fileName) {
+    return fileAnalyser.getTopPoints(fileName);
   }
 
   @Override
-  public SortedMessagesCount getNumberOfMessages() {
-    return fileAnalyser.getSortedMessagesCount();
+  public SortedMessagesCount getNumberOfMessages(String fileName) {
+    return fileAnalyser.getSortedMessagesCount(fileName);
   }
 
 }

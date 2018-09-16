@@ -6,8 +6,8 @@ import java.util.Map;
 
 public interface SpamAnalysisService {
 
-  Map getPoints();
+  Map getPointsByFileName(String fileName);
 
-  SortedMessagesCount getNumberOfMessages();
+  SortedMessagesCount getNumberOfMessages(String fileName);
 
 }

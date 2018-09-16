@@ -16,8 +16,8 @@ import java.util.*;
 @Component
 public class FileAnalyser {
 
-  public Map<String, Object> getTopPoints() {
-    SortedMessages sortedMessages = sortMessages();
+  public Map<String, Object> getTopPoints(String fileName) {
+    SortedMessages sortedMessages = sortMessages(fileName);
     if (Objects.isNull(sortedMessages)) {
       log.error("SortedMessages is null.");
       throw new NullPointerException("SortedMessages is null.");
@@ -30,8 +30,8 @@ public class FileAnalyser {
     return response;
   }
 
-  public SortedMessagesCount getSortedMessagesCount() {
-    SortedMessages sortedMessages = sortMessages();
+  public SortedMessagesCount getSortedMessagesCount(String fileName) {
+    SortedMessages sortedMessages = sortMessages(fileName);
     if (Objects.isNull(sortedMessages)) {
       log.error("SortedMessages is null.");
       throw new NullPointerException("SortedMessages is null.");
@@ -43,9 +43,9 @@ public class FileAnalyser {
     return new SortedMessagesCount(spamCount, hamCount);
   }
 
-  private SortedMessages sortMessages() {
+  private SortedMessages sortMessages(String fileName) {
     SortedMessages sortedMessages = new SortedMessages();
-    try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
+    try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
       String line;
       while ((line = br.readLine()) != null) {
         if (line.endsWith("spam")) {
@@ -68,7 +68,7 @@ public class FileAnalyser {
     Map<String, Integer> uniquesWords = new HashMap<>();
     words.forEach(word -> {
       if (uniquesWords.containsKey(word)) {
-        int frequency = uniquesWords.get(word) + 1;
+        int frequency = uniquesWords.get(word);
         frequency += 1;
         uniquesWords.replace(word, frequency);
       }
@@ -89,9 +89,6 @@ public class FileAnalyser {
 
     return points;
   }
-
-  private static final String FILE_NAME = "english.txt";
-  private static final String FILE_NAME_BIG = "english_big.txt";
 
   private static final int TOP_NUMBER = 10;
 
