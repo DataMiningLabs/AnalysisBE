@@ -1,27 +1,28 @@
 package com.knhu.shtefan.analysis.spam.analysis.utils;
 
-
+import com.knhu.shtefan.analysis.spam.analysis.dto.Point;
 import com.knhu.shtefan.analysis.spam.analysis.dto.SortedMessages;
 import com.knhu.shtefan.analysis.spam.analysis.dto.SortedMessagesCount;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-import java.util.Objects;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.HashMap;
 
-@Log4j2
-@Service
-public class FileAnalyser {
+import java.util.Objects;
+import java.util.Collections;
+import java.util.Arrays;
 
-  private static final String FILE_NAME = "english.txt";
+import java.util.stream.Collectors;
+
+@Log4j2
+@Component
+public class FileAnalyser {
 
   public Map<String, Object> getTopPoints() {
     SortedMessages sortedMessages = sortMessages();
@@ -30,15 +31,9 @@ public class FileAnalyser {
       throw new NullPointerException("SortedMessages is null.");
     }
 
-    Map<String, Integer> spamWordsFrequency = analyseMessages(sortedMessages.getSpam());
-    List topSpam = ConverterToPoint.convertToTop10Points(spamWordsFrequency);
-
-    Map<String, Integer> hamWordsFrequency = analyseMessages(sortedMessages.getHam());
-    List topHam = ConverterToPoint.convertToTop10Points(hamWordsFrequency);
-
     Map<String, Object> response = new HashMap<>();
-     response.put("spam", topSpam);
-     response.put("ham", topHam);
+    response.put("spam", analyseMessages(sortedMessages.getSpamList()));
+    response.put("ham", analyseMessages(sortedMessages.getHamList()));
 
     return response;
   }
@@ -50,20 +45,12 @@ public class FileAnalyser {
       throw new NullPointerException("SortedMessages is null.");
     }
 
-    int spamCount = sortedMessages.getSpam().size();
-    int hamCount = sortedMessages.getHam().size();
+    int spamCount = sortedMessages.getSpamSize();
+    int hamCount = sortedMessages.getHamSize();
 
-    SortedMessagesCount sortedMessagesCount = new SortedMessagesCount(spamCount, hamCount);
-
-    return sortedMessagesCount;
+    return new SortedMessagesCount(spamCount, hamCount);
   }
 
-  /**
-   * Read all messages from file and sorted them in list of spam or list of ham messages.
-   * Returns null if some exception happens.
-   *
-   * @return object of SortedMessages where spam and ham messages are in different lists
-   */
   private SortedMessages sortMessages() {
     SortedMessages sortedMessages = new SortedMessages();
     try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
@@ -83,34 +70,24 @@ public class FileAnalyser {
     return sortedMessages;
   }
 
-  /**
-   * Count each word frequency in all messages, return map of
-   * word - frequency.
-   *
-   * @param messages list of messages
-   * @return map of word frequency
-   */
-  private Map<String, Integer> analyseMessages(List<String> messages) {
-    Map<String, Integer> wordsFrequency = new TreeMap<>();
-    for (String message : messages) {
-      message = message.replace("...", "");
-
-      List<String> words = Arrays.asList(message.split(" "));
-
-      words.forEach(word -> {
-        if (wordsFrequency.containsKey(word)) {
-          int frequency = wordsFrequency.get(word);
-          frequency += 1;
-          wordsFrequency.put(word, frequency);
-        }
-
-        if (!wordsFrequency.containsKey(word)) {
-          wordsFrequency.put(word, 1);
-        }
-      });
-    }
-
-    return wordsFrequency;
+  private List<Point> analyseMessages(StringBuilder messages) {
+    List<String> words = Arrays.asList(messages.toString().split(" "));
+    return words
+      .stream().collect(
+        Collectors.toMap(
+          word -> word,
+          word -> Collections.frequency(words, word),
+          (word1, word2) -> word1
+        )
+      )
+      .entrySet().stream()
+      .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+      .limit(10)
+      .map(item -> new Point(item.getKey(), item.getValue()))
+      .collect(Collectors.toList());
   }
+
+  private static final String FILE_NAME = "english.txt";
+  private static final String FILE_NAME_BIG = "english_big.txt";
 
 }

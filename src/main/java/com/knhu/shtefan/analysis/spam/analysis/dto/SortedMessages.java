@@ -1,28 +1,24 @@
 package com.knhu.shtefan.analysis.spam.analysis.dto;
 
-import java.util.ArrayList;
-import java.util.List;
+import lombok.Getter;
 
+@Getter
 public class SortedMessages {
 
-  private List<String> spamList = new ArrayList<>();
+  private StringBuilder spamList = new StringBuilder();
+  private int spamSize;
 
-  private List<String> hamList = new ArrayList<>();
-
-  public List<String> getSpam() {
-    return spamList;
-  }
+  private StringBuilder hamList = new StringBuilder();
+  private int hamSize;
 
   public void addSpam(String spam) {
-    spamList.add(spam);
-  }
-
-  public List<String> getHam() {
-    return hamList;
+    spamList.append(spam);
+    spamSize += 1;
   }
 
   public void addHam(String ham) {
-    hamList.add(ham);
+    hamList.append(ham);
+    hamSize += 1;
   }
 
 }
