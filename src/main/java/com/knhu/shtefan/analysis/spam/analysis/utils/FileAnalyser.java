@@ -10,7 +10,13 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-import java.util.*;
+import java.util.Objects;
+import java.util.Collections;
+import java.util.Arrays;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 @Log4j2
 @Component
@@ -66,17 +72,7 @@ public class FileAnalyser {
     List<String> words = Arrays.asList(messages.toString().split(" "));
 
     Map<String, Integer> uniquesWords = new HashMap<>();
-    words.forEach(word -> {
-      if (uniquesWords.containsKey(word)) {
-        int frequency = uniquesWords.get(word);
-        frequency += 1;
-        uniquesWords.replace(word, frequency);
-      }
-
-      if (!uniquesWords.containsKey(word)) {
-        uniquesWords.put(word, 1);
-      }
-    });
+    words.forEach(word -> uniquesWords.merge(word, 1, Integer::sum));
 
     List<Map.Entry<String, Integer>> list = new ArrayList<>(uniquesWords.entrySet());
     list.sort(Map.Entry.comparingByValue());
