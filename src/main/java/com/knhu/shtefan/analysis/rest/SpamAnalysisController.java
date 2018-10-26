@@ -22,9 +22,4 @@ public class SpamAnalysisController {
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
-  @RequestMapping(value = "_count/{fileName}", method = RequestMethod.GET)
-  public @ResponseBody SortedMessagesCount getNumberOfMessages(@PathVariable String fileName) {
-    return spamAnalysisService.getNumberOfMessages(fileName);
-  }
-
 }

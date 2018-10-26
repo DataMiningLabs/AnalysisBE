@@ -8,6 +8,4 @@ public interface SpamAnalysisService {
 
   Map getPointsByFileName(String fileName);
 
-  SortedMessagesCount getNumberOfMessages(String fileName);
-
 }

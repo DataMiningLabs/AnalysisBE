@@ -18,9 +18,4 @@ public class SpamAnalysisServiceImpl implements SpamAnalysisService {
     return fileAnalyser.getTopPoints(fileName);
   }
 
-  @Override
-  public SortedMessagesCount getNumberOfMessages(String fileName) {
-    return fileAnalyser.getSortedMessagesCount(fileName);
-  }
-
 }
