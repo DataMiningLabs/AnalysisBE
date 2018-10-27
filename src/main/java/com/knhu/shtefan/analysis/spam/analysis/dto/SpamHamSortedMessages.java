@@ -1,19 +1,17 @@
 package com.knhu.shtefan.analysis.spam.analysis.dto;
 
-import com.knhu.shtefan.analysis.Word;
 import com.knhu.shtefan.analysis.spam.analysis.utils.StopWords;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class NeuralNetwork implements Serializable {
+public class SpamHamSortedMessages {
 
   public Map<String, Word> words;
   public int totalSpamCount;
   public int totalHamCount;
 
-  public NeuralNetwork() {
+  public SpamHamSortedMessages() {
     words = new HashMap<>();
     totalSpamCount = 0;
     totalHamCount = 0;
@@ -28,10 +26,8 @@ public class NeuralNetwork implements Serializable {
   }
 
   public void addNewWord(String word, String type) {
-    word = clearWord(word);
-    if (word.isEmpty()) {
-      return;
-    }
+    word = filterWord(word);
+    if (word.isEmpty()) { return; }
 
     Word w;
     if (words.containsKey(word)) {
@@ -50,7 +46,7 @@ public class NeuralNetwork implements Serializable {
     words.put(word, w);
   }
 
-  private String clearWord(String word) {
+  private String filterWord(String word) {
     word = word.replaceAll("\\W", "");
     word = word.toLowerCase();
     word = StopWords.contains(word) ? "" : word;

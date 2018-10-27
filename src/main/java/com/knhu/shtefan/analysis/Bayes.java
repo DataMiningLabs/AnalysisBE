@@ -1,5 +1,7 @@
 package com.knhu.shtefan.analysis;
 
+import com.knhu.shtefan.analysis.spam.analysis.dto.Word;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;

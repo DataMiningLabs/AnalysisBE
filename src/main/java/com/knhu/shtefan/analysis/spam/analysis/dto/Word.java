@@ -1,4 +1,4 @@
-package com.knhu.shtefan.analysis;
+package com.knhu.shtefan.analysis.spam.analysis.dto;
 
 import java.io.Serializable;
 
