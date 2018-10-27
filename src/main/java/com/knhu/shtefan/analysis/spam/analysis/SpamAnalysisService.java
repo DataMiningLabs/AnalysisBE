@@ -6,4 +6,6 @@ public interface SpamAnalysisService {
 
   Map getPointsByFileName(String fileName);
 
+  Map analyseMessage(String message);
+
 }

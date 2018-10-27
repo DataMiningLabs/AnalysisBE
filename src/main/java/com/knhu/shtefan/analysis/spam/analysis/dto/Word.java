@@ -1,8 +1,6 @@
 package com.knhu.shtefan.analysis.spam.analysis.dto;
 
-import java.io.Serializable;
-
-public class Word implements Serializable {
+public class Word {
 
 	private String word;	//the word itself
 	private int spamCount;	//number of this words appearances in spam messages

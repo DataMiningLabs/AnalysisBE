@@ -1,6 +1,6 @@
 package com.knhu.shtefan.analysis.spam.analysis.dto;
 
-import com.knhu.shtefan.analysis.spam.analysis.utils.StopWords;
+import com.knhu.shtefan.analysis.spam.analysis.utils.WordCleaner;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +26,7 @@ public class SpamHamSortedMessages {
   }
 
   public void addNewWord(String word, String type) {
-    word = filterWord(word);
+    word = WordCleaner.clean(word);
     if (word.isEmpty()) { return; }
 
     Word w;
@@ -44,19 +44,6 @@ public class SpamHamSortedMessages {
       w.countSpam();
     }
     words.put(word, w);
-  }
-
-  private String filterWord(String word) {
-    word = word.replaceAll("\\W", "");
-    word = word.toLowerCase();
-    word = StopWords.contains(word) ? "" : word;
-    for (int i = 0; i < 10; i++) {
-      if (word.contains(i + "")) {
-        word = "";
-        break;
-      }
-    }
-    return word;
   }
 
 }

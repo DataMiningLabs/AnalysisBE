@@ -19,8 +19,9 @@ public class SpamAnalysisServiceImpl implements SpamAnalysisService {
     return fileAnalyser.getTopPoints(fileName);
   }
 
+  @Override
   public Map analyseMessage(String message) {
-    return null;
+    return messageAnalyser.analyseMessage(message);
   }
 
 }
