@@ -58,10 +58,12 @@ public class FileAnalyser {
       while ((line = br.readLine()) != null) {
         String type = "";
         if (line.endsWith("spam")) {
+          line = line.replaceAll("spam", "");
           type = "spam";
           spamMessages += 1;
         }
         if (line.endsWith("ham")) {
+          line = line.replaceAll("ham", "");
           type = "ham";
           hamMessages += 1;
         }

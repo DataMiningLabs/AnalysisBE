@@ -1,8 +1,10 @@
 package com.knhu.shtefan.analysis.rest;
 
 import com.knhu.shtefan.analysis.spam.analysis.SpamAnalysisService;
+import com.knhu.shtefan.analysis.spam.analysis.dto.MessageDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,9 +28,9 @@ public class SpamAnalysisController {
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
-  @RequestMapping(value = "analyse", method = RequestMethod.POST)
-  public @ResponseBody ResponseEntity analyseMessage(@RequestBody Map<String, String> request) {
-    String message = request.get("message");
+  @RequestMapping(value = "analyse", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+  public @ResponseBody ResponseEntity analyseMessage(@RequestBody MessageDto messageDto) {
+    String message = messageDto.getMessage();
     Map response = spamAnalysisService.analyseMessage(message);
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
