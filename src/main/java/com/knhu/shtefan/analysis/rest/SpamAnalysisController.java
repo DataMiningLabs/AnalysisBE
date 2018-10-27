@@ -21,15 +21,13 @@ public class SpamAnalysisController {
   private SpamAnalysisService spamAnalysisService;
 
   @RequestMapping(value = "_points/{fileName}", method = RequestMethod.GET)
-  public @ResponseBody
-  ResponseEntity getTopPoints(@PathVariable String fileName) {
+  public @ResponseBody ResponseEntity getTopPoints(@PathVariable String fileName) {
     Map response = spamAnalysisService.getPointsByFileName(fileName);
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
   @RequestMapping(value = "analyse", method = RequestMethod.POST)
-  public @ResponseBody
-  ResponseEntity analyseMessage(@RequestBody Map<String, String> request) {
+  public @ResponseBody ResponseEntity analyseMessage(@RequestBody Map<String, String> request) {
     String message = request.get("message");
     Map response = spamAnalysisService.analyseMessage(message);
     return new ResponseEntity<>(response, HttpStatus.OK);
